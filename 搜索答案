@@ -1,0 +1,19 @@
+# -*- coding: utf-8 -*-
+import json
+import difflib
+
+# '1928年，张作霖乘坐的专列经过京奉、南满铁路交叉处的三洞桥时，火车被日本关东军预埋的炸药炸毁，张作霖被炸成重伤，送回沈阳后，于当日死去，这次事件史称“        ”。|万宝山事件|河北事件|锦州事件|皇姑屯事件'
+with open("./daan.json", "r", encoding="utf8") as fp:
+    chaxunshuju = '中华人民共和国国家安全法》规定，        领导全国武装力量，决定军事战略和武'
+    my_cutoff = 0.8
+    json_data = json.load(fp)
+    keys = difflib.get_close_matches(chaxunshuju, json_data.keys(), 10, my_cutoff)
+    while len(keys) <= 0:
+        my_cutoff = my_cutoff - 0.03
+        keys = difflib.get_close_matches(chaxunshuju, json_data.keys(), 10, my_cutoff)
+        if my_cutoff < 0.1:
+            print("未找到答案")
+    if len(keys) == 1:
+        print(keys[0], json_data[keys[0]], my_cutoff, len(keys))
+    else:
+        print('未找到答案啊')
